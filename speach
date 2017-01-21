@@ -1,3 +1,12 @@
 #!/bin/bash
-#espeak -veurope/sv -s150 -b1 "Mycroft här. $*" --stdout | aplay
-/opt/mimic/bin/mimic -voice slt --setf duration_stretch=1.2 -t "Mycroft here. $*"
+if [ -f /etc/domoticz/scripts.conf ]; then
+	tts=$(grep ^ttsEngine /etc/domoticz/scripts.conf | cut -d= -f2- | tr -d '"' )
+	params=$(grep ^ttsParams /etc/domoticz/scripts.conf | cut -d= -f2- | tr -d '"' )
+	greting=$(grep ^ttsGreting /etc/domoticz/scripts.conf | cut -d= -f2- | tr -d '"' )
+fi
+
+if [ "$tts" == "mimic" ]; then
+	/opt/mimic/bin/mimic $params -t "$greting $*"
+elif [ "$tts" == "espeak" ]; then
+	espeak $params "Mycroft här. $*" --stdout | aplay
+fi
