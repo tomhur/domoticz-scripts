@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/bin/aplay -q /opt/domoticz/sounds/grovEntren.vaw

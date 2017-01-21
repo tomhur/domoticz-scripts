@@ -1,0 +1,3 @@
+#!/bin/bash
+#espeak -veurope/sv -s150 -b1 "Mycroft här. $*" --stdout | aplay
+/opt/mimic/bin/mimic -voice slt --setf duration_stretch=1.2 -t "Mycroft here. $*"
