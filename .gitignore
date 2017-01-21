@@ -13,7 +13,6 @@ buienradar_rain_example.pl
 download_update.sh
 logrotate/
 lua_parsers/
-parse-email.py
 readme.txt
 restart_domoticz
 templates/
