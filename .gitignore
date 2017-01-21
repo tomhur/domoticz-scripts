@@ -1,5 +1,6 @@
 */script_device_demo*
 */script_time_demo*
+lua/JSON.lua
 *.pyc
 python/domoticz.py
 python/googlepubsub.py
