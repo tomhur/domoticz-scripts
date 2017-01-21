@@ -5,6 +5,7 @@ lua/JSON.lua
 python/domoticz.py
 python/googlepubsub.py
 python/reloader.py
+python/script_device_PIRsmarter.py
 _domoticz_main
 _domoticz_main.bat
 buienradar_rain_example.pl
