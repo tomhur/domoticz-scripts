@@ -8,5 +8,5 @@ fi
 if [ "$tts" == "mimic" ]; then
 	/opt/mimic/bin/mimic $params -t "$greting $*"
 elif [ "$tts" == "espeak" ]; then
-	espeak $params "Mycroft här. $*" --stdout | aplay
+	espeak $params "$greting $*" --stdout | aplay
 fi
