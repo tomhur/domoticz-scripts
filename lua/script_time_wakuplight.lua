@@ -12,7 +12,7 @@ commandArray = {}
 if ( uservariables[Alarm] ~= 'false') then
   h = uservariables[Alarm]:match("([^%.]+)")
   m = uservariables[Alarm]:match("%d+$")
-  if debug then print('Timme=' .. h) end
+  if debug then print('Hour=' .. h) end
   if debug then print('Minute=' .. m) end
 
   t = os.date("*t")

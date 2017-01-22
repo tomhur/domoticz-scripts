@@ -1,5 +1,5 @@
 debug = false
-if debug then print('Start motorvärmare') end
+if debug then print('Start car heater script') end
 
 dofile("/opt/domoticz/scripts/parse_config.lua")
 
@@ -9,47 +9,47 @@ commandArray = {}
 
 if ( uservariables[conf['alarmClock']] ~= 'false') then
   h = uservariables[conf['alarmClock']]:match("([^%.]+)")
-  if debug then print('Timme=' .. h) end
+  if debug then print('Hour=' .. h) end
   m = uservariables[conf['alarmClock']]:match("%d+$")
-  if debug then print('Minut=' .. m) end
+  if debug then print('Minute=' .. m) end
 
   t = os.date("*t")
-  if debug then print('Timme=' .. t['hour']) end
+  if debug then print('Hour=' .. t['hour']) end
   t['hour']=h
-  if debug then print('Timme=' .. t['hour']) end
-  if debug then print('Minut=' .. t['min']) end
+  if debug then print('Hour=' .. t['hour']) end
+  if debug then print('Minute=' .. t['min']) end
   t['min']=m
-  if debug then print('Minut=' .. t['min']) end
-  tid= os.time(t)
-  tid=tid+timeAfterAlarm*60
-  if debug then print('Tid=' .. tid) end
+  if debug then print('Minute=' .. t['min']) end
+  time= os.time(t)
+  time=time+timeAfterAlarm*60
+  if debug then print('Time=' .. time) end
 
-  nu = os.time()
-  if debug then print('Nu =' .. nu) end
+  now = os.time()
+  if debug then print('Now =' .. now) end
 
-  if ( nu < tid and otherdevices[conf['carHeater']] == 'Off' ) then
+  if ( now < time and otherdevices[conf['carHeater']] == 'Off' ) then
     temp = otherdevices_svalues[conf['outsideTemp']]:match("([^;]+);([^;]+)")
-    if debug then print('Temperatur=' .. temp) end
-    innan =math.floor(((temp-12)/-0.28)*60)
-    if debug then print('Innan=' .. innan) end
-    if debug then print('Kvar=' .. tid-nu) end
-    tid = tid - innan
-    if ( nu > tid and otherdevices[conf['carHeater']] == 'Off' ) then
-      if debug then print('Motorvärmare sätts på') end
+    if debug then print('Temperature=' .. temp) end
+    before =math.floor(((temp-12)/-0.28)*60)
+    if debug then print('Before=' .. before) end
+    if debug then print('Left=' .. time-now) end
+    time = time - before
+    if ( now > time and otherdevices[conf['carHeater']] == 'Off' ) then
+      if debug then print('Car heater is turned on') end
       commandArray[conf['carHeater']] = 'On'
     end
   else
-    if debug then print('Kvar=' .. tid-nu) end
+    if debug then print('Left=' .. time-now) end
   end
-  if ( nu > tid and otherdevices[conf['carHeater']] == 'On' ) then
-    if debug then print('Motorvärmare stängs av') end
+  if ( now > time and otherdevices[conf['carHeater']] == 'On' ) then
+    if debug then print('Car heater is turned off') end
     commandArray[conf['carHeater']] = 'Off'
     commandArray['Variable:' .. conf['alarmClock']] = 'false'
   end
 else
-  if debug then print('Motorvärmare ska inte sättas på!') end
+  if debug then print('Car heater is not schedueled to be turned on!') end
 end
 
-if debug then print('Slut motorvärmare') end
+if debug then print('End car heater script') end
 
 return commandArray
