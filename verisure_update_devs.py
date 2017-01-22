@@ -20,15 +20,14 @@ try:
 except:
 	exec(open("/etc/domoticz/scripts.conf").read())
 
-file = "/tmp/domoticz_verisure_session"
 try:
-	f = open(file, 'rb')
+	f = open(mypagesSession, 'rb')
 	myPages = pickle.load(f)
 	f.close()
 except:
 	myPages = verisure.Session(email, verisurepass)
 	myPages.login()
-	f = open(file, 'wb')
+	f = open(mypagesSession, 'wb')
 	pickle.dump(myPages, f)
 	f.close()
 	if debug:
@@ -40,7 +39,7 @@ try:
 except:
 	myPages = verisure.Session(email, verisurepass)
 	myPages.login()
-	f = open(file, 'wb')
+	f = open(mypagesSession, 'wb')
 	pickle.dump(myPages, f)
 	f.close()
 	dev = myPages.get_overview()

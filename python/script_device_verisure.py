@@ -6,7 +6,7 @@ sys.path.insert(0, '/opt/python-verisure/')
 import verisure
 import pickle
 
-debug = True
+debug = False
 
 try:
     execfile("/etc/domoticz/scripts.conf")
@@ -14,15 +14,14 @@ except:
     exec(open("/etc/domoticz/scripts.conf").read())
 
 #Load old session
-file = "/tmp/domoticz_verisure_session"
 try:
-	f = open(file, 'rb')
+	f = open(mypagesSession, 'rb')
 	myPages = pickle.load(f)
 	f.close()
 except:
 	myPages = verisure.Session(email, verisurepass)
 	myPages.login()
-	f = open(file, 'wb')
+	f = open(mypagesSession, 'wb')
 	pickle.dump(myPages, f)
 	f.close()
 	if debug:
@@ -34,7 +33,7 @@ try:
 except:
 	myPages = verisure.Session(email, verisurepass)
 	myPages.login()
-	f = open(file, 'wb')
+	f = open(mypagesSession, 'wb')
 	pickle.dump(myPages, f)
 	f.close()
 	overview = myPages.get_overview()
@@ -57,7 +56,7 @@ if changed_device.name in sp:
 		d.log("End Smartplug device change")
 
 #Arm then sleeping
-if changed_device.name == "Sover":
+if changed_device.name == atSleep:
 	if debug:
 		d.log("Start device change: " + changed_device.name )
 

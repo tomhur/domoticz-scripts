@@ -11,7 +11,7 @@ import urllib3
 from datetime import datetime
 from tzlocal import get_localzone
 
-debug = True
+debug = False
 
 try:
     execfile("/etc/domoticz/scripts.conf")
@@ -23,15 +23,14 @@ d.log("Getting status from Verisure...")
 if int(time.time()) % frequency < 60 :
 
 	#Login
-	file = "/tmp/domoticz_verisure_session"
 	try:
-		f = open(file, 'rb')
+		f = open(mypagesSession, 'rb')
 		myPages = pickle.load(f)
 		f.close()
 	except:
 		myPages = verisure.Session(email, verisurepass)
 		myPages.login()
-		f = open(file, 'wb')
+		f = open(mypagesSession, 'wb')
 		pickle.dump(myPages, f)
 		f.close()
 		if debug:
@@ -43,7 +42,7 @@ if int(time.time()) % frequency < 60 :
 	except:
 		myPages = verisure.Session(email, verisurepass)
 		myPages.login()
-		f = open(file, 'wb')
+		f = open(mypagesSession, 'wb')
 		pickle.dump(myPages, f)
 		f.close()
 		overview = myPages.get_overview()
@@ -54,7 +53,7 @@ if int(time.time()) % frequency < 60 :
 	status = overview['armState']['statusType']
 	if debug:
 		d.log("Verisure Alarm status: ", status )
-	device = d.devices["Hemma"]
+	device = d.devices[atHome]
 	if status == "DISARMED" or status == "ARMED_HOME":
 		device.on()
 	else:

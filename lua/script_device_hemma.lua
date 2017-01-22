@@ -1,5 +1,7 @@
+dofile("/opt/domoticz/scripts/parse_config.lua")
+
 commandArray = {}
-if (devicechanged['Hemma'] == 'Off' and otherdevices['Kvällslampor'] == 'On') then
+if (devicechanged[conf['atHome']] == 'Off' and otherdevices[conf['eveningLights']] == 'On') then
 	commandArray['Group:Kvällslampor']='Off'
 end
 return commandArray

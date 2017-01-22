@@ -1,9 +1,11 @@
-debug = true
+debug = false
 if debug then print('Start wakeuplight') end
 
-timeBeforeAlarm = 20*60 -- in seconds
-Dimmer = 'Sovrum tak'
-Alarm = "Väckarklocka"
+dofile("/opt/domoticz/scripts/parse_config.lua")
+
+timeBeforeAlarm = tonumber(conf['timeBeforeAlarm'])*60
+Dimmer = conf['wakeuplight']
+Alarm = conf['alarmClock']
 
 commandArray = {}
 

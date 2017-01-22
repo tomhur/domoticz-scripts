@@ -1,16 +1,16 @@
-debug = true
+debug = false
 if debug then print('Start motorvärmare') end
 
-tidEfterAlarm = 45 -- i minuter
+dofile("/opt/domoticz/scripts/parse_config.lua")
 
--- tid=((temp-12)/-0,28)*60
+timeAfterAlarm = tonumber(conf['timeAfterAlarm'])
 
 commandArray = {}
 
-if ( uservariables['Väckarklocka'] ~= 'false') then
-  h = uservariables['Väckarklocka']:match("([^%.]+)")
+if ( uservariables[conf['alarmClock']] ~= 'false') then
+  h = uservariables[conf['alarmClock']]:match("([^%.]+)")
   if debug then print('Timme=' .. h) end
-  m = uservariables['Väckarklocka']:match("%d+$")
+  m = uservariables[conf['alarmClock']]:match("%d+$")
   if debug then print('Minut=' .. m) end
 
   t = os.date("*t")
@@ -21,30 +21,30 @@ if ( uservariables['Väckarklocka'] ~= 'false') then
   t['min']=m
   if debug then print('Minut=' .. t['min']) end
   tid= os.time(t)
-  tid=tid+tidEfterAlarm*60
+  tid=tid+timeAfterAlarm*60
   if debug then print('Tid=' .. tid) end
 
   nu = os.time()
   if debug then print('Nu =' .. nu) end
 
-  if ( nu < tid and otherdevices['Motorvärmare'] == 'Off' ) then
-    temp = otherdevices_svalues['Ute']:match("([^;]+);([^;]+)")
+  if ( nu < tid and otherdevices[conf['carHeater']] == 'Off' ) then
+    temp = otherdevices_svalues[conf['outsideTemp']]:match("([^;]+);([^;]+)")
     if debug then print('Temperatur=' .. temp) end
     innan =math.floor(((temp-12)/-0.28)*60)
     if debug then print('Innan=' .. innan) end
     if debug then print('Kvar=' .. tid-nu) end
     tid = tid - innan
-    if ( nu > tid and otherdevices['Motorvärmare'] == 'Off' ) then
+    if ( nu > tid and otherdevices[conf['carHeater']] == 'Off' ) then
       if debug then print('Motorvärmare sätts på') end
-      commandArray['Motorvärmare'] = 'On'
+      commandArray[conf['carHeater']] = 'On'
     end
   else
     if debug then print('Kvar=' .. tid-nu) end
   end
-  if ( nu > tid and otherdevices['Motorvärmare'] == 'On' ) then
+  if ( nu > tid and otherdevices[conf['carHeater']] == 'On' ) then
     if debug then print('Motorvärmare stängs av') end
-    commandArray['Motorvärmare'] = 'Off'
-    commandArray['Variable:Väckarklocka'] = 'false'
+    commandArray[conf['carHeater']] = 'Off'
+    commandArray['Variable:' .. conf['alarmClock']] = 'false'
   end
 else
   if debug then print('Motorvärmare ska inte sättas på!') end
