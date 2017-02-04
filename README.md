@@ -69,6 +69,9 @@ Turns a dimmable ligt into a wakeup light. It uses the same varible Väckarklock
 ### lua/script_time_windows.lua
 Sceduling of window lights. Lights in bedrroms will not be turned on in the morning. No lights will be on in then the sun is up.
 
+### python/script_device_PIR_hallway.py
+Take house out off sleep mode when there is movement in the hallway.
+
 ### python/script_device_verisure.py
 Turn on or off Verisure SmartPlug devices.
 
