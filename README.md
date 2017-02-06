@@ -1,8 +1,8 @@
 # domoticz-scripts
-These are some scripts to be used with [Domoticz](http://domoticz.com/) to enable some extra functionality and integration
+These are some scripts to be used with [Domoticz](http://domoticz.com/) to enable some extra functionality and integration with other services.
 
 ### Legal Disclaimer
-These scripts are not affiliated with other software or servicecs that they use and/or depend on. The developers take no legal responsibility for the functionality or security if you chose to use the scripts.
+These scripts are not affiliated with other software or services that they use and/or depend on. The developers take no legal responsibility for the functionality or security if you chose to use the scripts.
 
 ## Installation
 ### Dependencies
@@ -24,15 +24,11 @@ Copy scripts.conf to /etc/domoticz/ and modify the variables to your liking.
 
 Any devices on Verisure MyPages and in Domoticz are expected to have the same name.
 
-### Explanation of language
-Since some names of switches are in Swedish a translation migh make it easier to understand:
-
-Hemma = At home
-Sover = Sleeping
-Väckarklock = Alarm clock
-
 ## The scripts
-### groventre
+### chime_1st_entrance
+Script that plays a specific sound then doorbell chime at primary entrence is pressed.
+
+### chime_2nd_entrance
 Script that plays a specific sound then doorbell chime at secondary entrence is pressed.
 
 ### parse-email.py
@@ -43,9 +39,6 @@ Script to trigger acctions based on push messages from Verisure. Sets switch HOm
 Script to be called from within Domoticz for voice output. Select tts engine, tts engine parameters and  greting phrase in scripts.conf.
 
 In Domoticz Settings->Notifications add "script://speach #MESSAGE" as an URL/Action in section Custom HTTP/Action. Remember to enable Custom HTTP/Action. Now you can add a notification to anything in Domoticz and the contents of "Custom Message" will be read out through your speaker.
-
-### storentre
-Script that plays a specific sound then doorbell chime at primary entrence is pressed.
 
 ### verisure_update_devs.py
 Script called by cron to get Verisure climate devices data and update a dummy device in Domoticz with that data. The script expects that the device have the same name in both Domoticz and on Verisures MyPages.
@@ -58,7 +51,7 @@ If the climate device hav both temperature and humidity the device in Domiticz i
 Switches of a group of lights then no one is home
 
 ### lua/script_time_hemma.lua
-Switches on a group off lights when someone is home and the sun is down. Switches of lights at sunrise or at bedtime which happens then switch Sover is turned on.
+Switches on a group off lights when someone is home and the sun is down. Switches of lights at sunrise or at bedtime which happens then switch atSleep is turned on.
 
 ### lua/script_time_motorvarmare.lua
 If Domoticz variable Väckarklocka is not false and time is set to format hour.minute it will start the car heater. The car heater will be switched of 45 min after the alarm. How long time before that depends on the temperature outside.
@@ -75,9 +68,9 @@ Take house out off sleep mode when there is movement in the hallway.
 ### python/script_device_verisure.py
 Turn on or off Verisure SmartPlug devices.
 
-Switches Verisure alarm status to ARMED_HOME from DISARMED then switch Sover is turned on.
+Switches Verisure alarm status to ARMED_HOME from DISARMED then switch atSleep is turned on.
 
-Switches Verisure alarm status from ARMED_HOME to DISARMED then switch Sover is turned off.
+Switches Verisure alarm status from ARMED_HOME to DISARMED then switch atSleep is turned off.
 
 ### python/script_time_verisure.py
 Periodicaly get status for Verisure devices. Does not yet work with climate devices (use verisure_update_devs.py for that).
