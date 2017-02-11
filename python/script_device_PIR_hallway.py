@@ -9,7 +9,7 @@ except:
 
 debug = True
 
-if changed_device.name == pir:
+if changed_device.name == pir and changed_device.is_on():
 	if debug:
 		domoticz.log("Start " + pir)
 	dev = domoticz.devices[atSleep]
