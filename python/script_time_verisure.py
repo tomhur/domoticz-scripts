@@ -8,6 +8,7 @@ import verisure
 import pickle
 import pytz
 import urllib3
+import certifi
 from datetime import datetime
 from tzlocal import get_localzone
 
@@ -62,7 +63,7 @@ if int(time.time()) % frequency < 60 :
 	#Smartplugs
 	for i in overview['controlPlugs']:
 		if debug:
-			d.log("Verisure Smartplug status for " + i['area'].encode("ascii","ignore") + ": ", i['currentState'] )
+			d.log("Verisure Smartplug status for " + i['area'].encode("utf-8","ignore") + ": ", i['currentState'] )
 		device = d.devices[i['area'].encode("utf-8","ignore")]
 		if i['currentState'] == "ON":
 			device.on()
@@ -71,50 +72,48 @@ if int(time.time()) % frequency < 60 :
 
 	#Climate
 	for i in overview['climateValues']:
-		if debug:
-			d.log("time: " + i['time'] )
-			d.log("location: " + i['deviceArea'].encode("ascii","ignore") )
-			d.log("serial: " + i['deviceLabel'] )
-			d.log("temperature: " + str(i['temperature']))
-		if 'humidity' in i:
-			if debug:
-				d.log("humidity: " + str(i['humidity']))
-			if i['humidity'] < 20:
-				comf = 2
-			if i['humidity'] >= 20 and i['humidity'] <= 35:
-				comf = 0
-			if i['humidity'] > 35 and i['humidity'] <= 75:
-				comf = 1
-			if i['humidity'] > 75:
-				comf = 3
-			url = baseurl + "?type=command&param=udevice&idx=" + climate[i['deviceArea'].encode("utf-8","ignore")] + "&nvalue=0&svalue=" + str(i['temperature']) + ";" + str(i['humidity']) + ";" + str(comf)
-		else:
-			url = baseurl + "?type=command&param=udevice&idx=" + climate[i['deviceArea'].encode("utf-8","ignore")] + "&nvalue=0&svalue=" + str(i['temperature'])
-
-		if debug:
-			d.log('URL: ' + url)
-
 		device = d.devices[i['deviceArea'].encode("utf-8","ignore")]
 		domlastupdate = datetime.strptime(device.last_update_string, '%Y-%m-%d %H:%M:%S')
-		domlastupdate = domlastupdate.replace(tzinfo=get_localzone())
 		verilastupdate = datetime.strptime(i['time'][:-5], '%Y-%m-%dT%H:%M:%S')
 		verilastupdate = verilastupdate.replace(tzinfo=pytz.UTC)
 		verilastupdate = verilastupdate.astimezone(get_localzone())
+		verilastupdate = verilastupdate.replace(tzinfo=None)
 		if debug:
-			d.log("Domoticz last update: " + str(domlastupdate))
-			d.log("Verisure last update: " + str(verilastupdate))
+			d.log("Domoticz last update of " + device.name + ": " + str(domlastupdate))
+			d.log("Verisure last update of " + device.name + ": " + str(verilastupdate))
 
 		if verilastupdate > domlastupdate:
 			if debug:
-				d.log("update domoticz")
+				d.log("update domoticz climate device " + device.name)
+			if debug:
+				d.log("time: " + i['time'] )
+				d.log("location: " + i['deviceArea'].encode("utf-8","ignore") )
+				d.log("serial: " + i['deviceLabel'] )
+				d.log("temperature: " + str(i['temperature']))
+			if 'humidity' in i:
+				if debug:
+					d.log("humidity: " + str(i['humidity']))
+				if i['humidity'] < 20:
+					comf = 2
+				if i['humidity'] >= 20 and i['humidity'] <= 35:
+					comf = 0
+				if i['humidity'] > 35 and i['humidity'] <= 75:
+					comf = 1
+				if i['humidity'] > 75:
+					comf = 3
+				url = baseurl + "type=command&param=udevice&idx=" + climate[i['deviceArea'].encode("utf-8","ignore")] + "&nvalue=0&svalue=" + str(i['temperature']) + ";" + str(i['humidity']) + ";" + str(comf)
+			else:
+				url = baseurl + "type=command&param=udevice&idx=" + climate[i['deviceArea'].encode("utf-8","ignore")] + "&nvalue=0&svalue=" + str(i['temperature'])
 
-			#http = urllib3.PoolManager()
-			#http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',ca_certs=certifi.where())
-			#r = http.request('GET', url, headers={'Authorization': 'Basic ' + auth})
-			#if debug:
-			#	d.log("Status code: " + str(r.status) + "\n" + r.data)
-			#if r.status != 200:
-			#	d.log("Error updating temp in Domoticz. HTTP code: " + str(r.status) + " " + r.data)
+			if debug:
+				d.log('URL: ' + url)
+
+			http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
+			r = http.request('GET', url, timeout=2.5)
+			if debug:
+				d.log("Status code: " + str(r.status) + "\n" + r.data)
+			if r.status != 200:
+				d.log("Error updating temp in Domoticz. HTTP code: " + str(r.status) + " " + r.data)
 
 else:
 	if debug:
